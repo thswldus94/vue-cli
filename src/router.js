@@ -40,12 +40,17 @@ export default new Router({
           path: '/tables',
           name: 'tables',
           component: () => import(/* webpackChunkName: "demo" */ './views/Tables.vue')
-      },
-      {
-        path: '/todo',
-        name: 'Todo',
-        component: () => import(/* webpackChunkName: "demo" */ './views/Todo.vue')
-      }
+        },
+        {
+          path: '/todo',
+          name: 'Todo',
+          component: () => import(/* webpackChunkName: "demo" */ './views/Todo.vue')
+        },
+        // {
+        //   path: '/malwares',
+        //   name: 'Malwares',
+        //   component: () => import(/* webpackChunkName: "demo" */ './views/Malwares.vue')
+        // }
       ]
     },
     {
