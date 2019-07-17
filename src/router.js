@@ -46,6 +46,11 @@ export default new Router({
           name: 'Todo',
           component: () => import(/* webpackChunkName: "demo" */ './views/Todo.vue')
         },
+        {
+          path: '/practice',
+          name: 'practice',
+          component: () => import(/* webpackChunkName: "demo" */ './views/VuePractice.vue')
+        },
         // {
         //   path: '/malwares',
         //   name: 'Malwares',
