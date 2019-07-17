@@ -16,6 +16,11 @@
                             <span class="btn-inner--text">Google</span>
                         </a>
                     </div> -->
+                    <div class="btn-wrapper text-left">
+                        <div v-if="errors.length">
+                            <h4 class="danger" v-for="error in errors" v-bind:key="error.id"><mark>{{ error }}</mark></h4>
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body px-lg-5 py-lg-5">
                     <!-- <div class="text-center text-muted mb-4">
@@ -44,7 +49,7 @@
 
                         <base-input class="input-group-alternative"
                                     placeholder="비밀번호 재확인"
-                                    type="password2"
+                                    type="password"
                                     addon-left-icon="ni ni-lock-circle-open"
                                     v-model="model.password2">
                         </base-input>
@@ -55,13 +60,13 @@
 
                         <div class="row my-4">
                             <div class="col-12">
-                                <base-checkbox class="custom-control-alternative">
+                                <base-checkbox class="custom-control-alternative" v-model="model.agree">
                                     <span class="text-muted">I agree with the <a href="#!">Privacy Policy</a></span>
                                 </base-checkbox>
                             </div>
                         </div>
                         <div class="text-center">
-                            <base-button type="primary" class="my-4">Create account</base-button>
+                            <base-button type="primary" class="my-4" v-on:click="checkForm()">회원가입</base-button>
                         </div>
                     </form>
                 </div>
@@ -89,9 +94,39 @@
         model: {
           id: '',
           email: '',
-          password: ''
-        }
+          password: '',
+          password2: '',
+          agree: false
+        },
+        errors: []
       }
+    },
+    methods: {
+        checkForm: function(e) {
+            this.errors = [];
+            if (!this.model.id) this.errors.push("ID는 필수사항 입니다.");
+            if (!this.model.password) this.errors.push("비밀번호를 입력 해 주세요.");
+            if (this.model.password !== this.model.password2) this.errors.push("비밀번호가 다릅니다.");
+            if (this.model.email.length > 0) {
+                if (!this.validEmail(this.model.email)) {
+                    this.errors.push("이메일 형식이 올바르지 않습니다.");
+                }
+            }
+
+            if (!this.errors.length) {
+                this.$http.post('/add', {
+                    addType : 'register',
+                    id: this.model.id,
+                    email: this.model.email,
+                    password: this.model.password,
+                    agree: this.model.agree ? 1 : 0
+                });
+            }
+        },
+        validEmail: function(email) {
+            var regex = /^(([^<>().,;:\s@"]+(\.[^<>().,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return regex.test(email);
+        }
     }
   }
 </script>
