@@ -28,6 +28,14 @@
                         <div class=" dropdown-header noti-title">
                             <h6 class="text-overflow m-0">Welcome!</h6>
                         </div>
+                        <div v-if="id !== null && email !== null">
+                          <div class="dropdown-divider"></div>
+                          <div class=" dropdown-header noti-title">
+                              <h6 class="text-overflow m-0">{{ id }}</h6>
+                              <h6 class="text-overflow m-0">{{ email }}</h6>
+                          </div>
+                          <div class="dropdown-divider"></div>
+                        </div>
                         <router-link to="/profile" class="dropdown-item">
                             <i class="ni ni-single-02"></i>
                             <span>My profile</span>
@@ -45,10 +53,7 @@
                             <span>Support</span>
                         </router-link>
                         <div class="dropdown-divider"></div>
-                        <router-link to="/profile" class="dropdown-item">
-                            <i class="ni ni-user-run"></i>
-                            <span>Logout</span>
-                        </router-link>
+                        <span v-on:click="logOut()">Logout</span>
                     </template>
                 </base-dropdown>
             </li>
@@ -61,7 +66,9 @@
       return {
         activeNotifications: false,
         showMenu: false,
-        searchQuery: ''
+        searchQuery: '',
+        id: null,
+        email: null
       };
     },
     methods: {
@@ -73,7 +80,21 @@
       },
       toggleMenu() {
         this.showMenu = !this.showMenu;
+      },
+      logOut() {
+        this.$http.get('/api/logout').then(function() {
+          location.href = "/";
+        });
       }
+    },
+    mounted() {
+      var vm = this;
+      this.$http.get('/api/session').then(function(result) {
+          if (result.data.id.length > 0 && result.data.email.length > 0) {
+              vm.id = result.data.id;
+              vm.email = result.data.email;
+          }
+      });
     }
   };
 </script>

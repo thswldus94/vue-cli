@@ -63,9 +63,14 @@
                 <div class="header-body text-center mb-7">
                     <div class="row justify-content-center">
                         <div class="col-lg-5 col-md-6">
-                            <h1 class="text-white">Welcome!</h1>
-                            <p class="text-lead text-white">Use these awesome forms to login or create new account in
-                                your project for free.</p>
+                            <h1 class="text-white">반갑습니다!</h1>
+                            <p class="text-lead text-white">
+                                개인적으로 공부를 위해 만들고 있는 사이트입니다~
+                                어떤 누구던 사이트를 이용할 수 있습니다!
+                            </p>
+                            <p class="text-white">
+                                <small>문의: thswldus1994@naver.com (손지연)</small>
+                            </p>
                         </div>
                     </div>
                 </div>

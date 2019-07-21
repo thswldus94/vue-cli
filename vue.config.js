@@ -72,7 +72,16 @@ module.exports = {
 
             },
             secure: false
-        }
+        },
+        '^/api': {
+          target: 'https://127.0.0.1:3000',
+          changeOrigin: true,
+          ws: true,
+          publicPath: {
+
+          },
+          secure: false
+      }
     }
   }
 };
