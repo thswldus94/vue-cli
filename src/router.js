@@ -40,15 +40,25 @@ export default new Router({
                     component: () => import( /* webpackChunkName: "demo" */ './views/Tables.vue')
                 },
                 {
+                    path: '/malwares',
+                    name: 'malwares',
+                    component: () => import( /* webpackChunkName: "demo" */ './views/Malwares.vue')
+                },
+                {
                     path: '/todo',
                     name: 'Todo',
                     component: () => import( /* webpackChunkName: "demo" */ './views/Todo.vue')
-                },
-                {
-                  path: '/practice',
-                  name: 'practice',
-                  component: () => import(/* webpackChunkName: "demo" */ './views/Practice/VuePractice.vue')
-                }
+				},
+				{
+					path: '/vue',
+					name: 'practice',
+					component: () => import(/* webpackChunkName: "demo" */ './views/Practice/VuePractice.vue')
+				},
+				{
+					path: '/component',
+					name: 'component',
+					component: () => import( /* webpackChunkName: "demo" */ './views/Practice/VueComponent.vue')
+				}
             ]
         },
         {
@@ -66,6 +76,6 @@ export default new Router({
                     component: () => import( /* webpackChunkName: "demo" */ './views/Register.vue')
                 }
             ]
-        }
+		}
     ]
 })

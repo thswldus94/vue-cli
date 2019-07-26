@@ -108,7 +108,7 @@ export default {
         },
         getTodos() {
             var vm = this; // 밑에 get의 function 안으로 들어가면 this가 함수내의 것? 이 되어버리므로 미리 저장하는거예용
-            this.$http.get('/get?type=todo').then(function(result) {
+            this.$http.get('/get/todo').then(function(result) {
                 vm.todos = result.data;
             });
         },

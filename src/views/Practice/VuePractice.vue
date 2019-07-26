@@ -405,12 +405,54 @@
 			</div>
 		</base-alert>
 
+		<base-alert type="secondary">
+			<h5>1. computed 기본 예제</h5>
+			<p>템플릿 내에는 간단한 표현식 작성이 가능하지만 길어지는 경우 가독성도 떨어지고 유지보수가 어려워요</p>
+			<p>간단하지 않는 로직을 사용해야 할 경우 computed 속성을 사용하도록 해요</p>
+			<br />
+			<div id="app21">
+				<p>원본 메시지: {{ message5 }}</p>
+				<p>역순 메시지: {{ reverseMessage }}</p>
+				<p>함수를 사용한 역순 메시지: {{ reverseMessageFunction() }}</p>
+			</div>
+		</base-alert>
 
+		<base-alert type="secondary">
+			<h5>2. Computed와 Methods</h5>
+			<p>Computed 속성은 종속 대상을 따라 저장(캐싱) 돼요.</p>
+			<p style="font-weight: bold">이말은 즉, 대상 또는 값이 변경되지 않고 그대로인 경우 함수를 실행하지 않는다는 것을 뜻해요.</p>
+			<p>여러번 요청 해도, 다시 계산하지 않고 예전에 계산된 결과를 보여준다는 것이죠.</p>
+			<p style="font-weight: bold">반대로 Methods를 호출하면 호출 할 때마다 계속 함수를 실행해요</p>
+			<p>여러번 요청 해도, 다시 계산하지 않고 예전에 계산된 결과를 보여준다는 것이죠.</p>
+		</base-alert>
+
+		<base-alert type="secondary">
+			<h5>3. Computed의 Getter Setter</h5>
+
+			<p>fullName의 getter와 setter를 지정할 수 있어요. fullName의 값을 변경하면 그에 따라 last, first도 바뀌어서 출력됩니다.</p>
+			<div id="app23" class="mt10">
+				제 이름은 {{ fullName }} 입니다~
+			</div>
+		</base-alert>
+
+		<!-- <base-alert type="secondary">
+			<h5>4. Watch의 속성</h5>
+			<p>Watch는 쉽게말해, 어떤 감시할 데이터를 정하고 그 데이터의 값이 변할 때 특정 함수를 실행해라 라는 의미예요</p>
+			<p>데이터가 비동기식 또는 시간이 많이 소요되는 작업을 할 때 유용해요</p>
+			<div id="app24">
+				<p>
+					yes or no 질문을 물어보슈ㅎㅎ :
+					<input class="form-control" v-model="question" />
+				</p>
+				<p>{{answer}}</p>
+			</div>
+		</base-alert> -->
 	</base-header>
 	
 </div>
 </template>
-
+<script src="https://unpkg.com/axios@0.12.0/dist/axios.min.js"></script>
+<script src="https://unpkg.com/lodash@4.13.1/lodash.min.js"></script>
 <script>
 export default {
 	name: 'practice',
@@ -513,7 +555,12 @@ export default {
 				{name: '.alt', desc: ''},
 				{name: '.shift', desc: ''},
 				{name: '.meta', desc: ''},
-			]
+			],
+			message5: '글자를 거꾸로 찍어봐요',
+			firstName: 'Jiyeon',
+			lastName: 'Son',
+			question : '',
+			answer: '질문 하기 전까지 대답하면 술래임 ㅋ'
 		}
 	},
 	methods: {
@@ -545,7 +592,29 @@ export default {
 		},
 		onClick: function() {
 			alert('당신은 마우스 클릭 이벤트만 누르고있습니다!!');
-		}
+		},
+		reverseMessageFunction: function() {
+			return this.message.split('').reverse().join('')
+		},
+		// getAnswer: _.debounce(
+		// 	function() {
+		// 		if (this.question.indexOf('?') === -1) {
+		// 			this.answer = '질문을 할라면 물음표를 붙여야제'
+		// 			return
+		// 		}
+		// 		this.answer = '생각중이여,,,쪼까 기다려';
+		// 		var vm = this;
+		// 		axios.get('https://yesno.wtf/api')
+		// 			.then(function(response) {
+		// 				vm.answer = _.capitalize(response.data.answer)
+		// 			})
+		// 			.catch(function (error) {
+		// 				vm.answer = '오메 에러여! API 에러구먼' + error
+		// 			})
+		// 	},
+		// 	// 사용자가 입력을 기다리는 시간 밀리세컨드 입니다
+		// 	500
+		// )
 	},
 	computed: {
 		evenNumbers: function() {
@@ -558,6 +627,28 @@ export default {
 				'text-success': this.isSuccess && !this.errorMessage,
 				'text-danger': this.errorMessage
 			}
+		},
+		reverseMessage: function() {
+			return this.message.split('').reverse().join('')
+		},
+		fullName: {
+			// fullname의 getter부분
+			get: function() {
+				return this.firstName + ' ' + this.lastName;
+			},
+			// fullname의 setter 부분
+			set: function(name) {
+				var names = name.split(' ');
+				this.firstName = names[0];
+				this.lastName = names[names.length - 1];
+			}
+		}
+	},
+	watch: {
+		// 질문이 변경될 때마다 이 함수가 실행됩니다
+		question: function(newQ) {
+			this.answer = '아따 빨리 말하랑께'
+			this.getAnswer()
 		}
 	}
 }
