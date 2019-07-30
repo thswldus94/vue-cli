@@ -52,8 +52,10 @@
                             <i class="ni ni-support-16"></i>
                             <span>Support</span>
                         </router-link>
-                        <div class="dropdown-divider"></div>
-                        <span v-on:click="logOut()">Logout</span>
+                        <div class="dropdown-divider" v-show="showLogout"></div>
+                        <div class="pl-3" style="font-size: 0.875rem" v-show="showLogout">
+                          <i class="ni ni-user-run"></i> <span v-on:click="logOut()" class="ml-3">Logout</span>
+                        </div>
                     </template>
                 </base-dropdown>
             </li>
@@ -68,7 +70,8 @@
         showMenu: false,
         searchQuery: '',
         id: null,
-        email: null
+        email: null,
+        showLogout: false
       };
     },
     methods: {
@@ -88,13 +91,16 @@
       }
     },
     mounted() {
-      var vm = this;
-      this.$http.get('/api/session').then(function(result) {
-          if (result.data.id.length > 0 && result.data.email.length > 0) {
-              vm.id = result.data.id;
-              vm.email = result.data.email;
-          }
-      });
+		var vm = this;
+		this.$http.get('/api/session').then(function(result) {
+			if (result.data.id.length > 0 && result.data.email.length > 0) {
+				vm.id = result.data.id;
+				vm.email = result.data.email;
+				vm.showLogout = true;
+			} else {
+				vm.showLogout = false;
+			}
+		});
     }
   };
 </script>

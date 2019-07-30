@@ -62,10 +62,7 @@ export default {
             if (id !== null) {
                 var vm = this; // 밑에 post의 function 안으로 들어가면 this가 함수내의 것? 이 되어버리므로 미리 저장하는거예용
 
-                this.$http.post('/delete', {
-                    deleteType : 'todo',
-                    id : id
-                }).then(function() {
+                this.$http.get('/delete/todo/' + id).then(function() {
                     vm.todos.splice(idx, 1);
                 });
                 this.title = null; // input 값 초기화
@@ -76,10 +73,8 @@ export default {
         updateTodo(todo, idx) {
             if (todo.id !== null) {
                 var vm = this;
-                this.$http.post('/update', {
-                    updateType: 'todo',
-                    title: todo.title,
-                    id: todo.id
+                this.$http.post('/update/todo/' + todo.id, {
+                    title: todo.title
                 }).then(function() {
                     vm.todos[idx].title = todo.title;
                     vm.editTodo = null;
@@ -93,13 +88,12 @@ export default {
             if (title !== null) {
                 var vm = this; // 밑에 post의 function 안으로 들어가면 this가 함수내의 것? 이 되어버리므로 미리 저장하는거예용
 
-                this.$http.post('/add', {
-                    addType : 'todo',
+                this.$http.post('/add/todo', {
                     title: title
-                });
-
-                this.$http.get('/get?type=todo').then(function(result) {
-                    vm.todos = result.data;
+                }).then(function() {
+                    vm.$http.get('/get/todo').then(function(result) {
+                        vm.todos = result.data;
+                    });
                 });
                 this.title = null; // input 값 초기화
             } else {
@@ -113,15 +107,25 @@ export default {
             });
         },
         completeTodo(todo) {
-            this.$http.post('/update/todo/done', {
-                is_done: 1,
-                id: todo.id
+            var vm = this;
+            this.$http.post('/update/todo/done/' + todo.id, {
+                is_done: 1
+            }).then(function() {
+                vm.$http.get('/get/todo').then(function(result) {
+                    vm.todos = result.data;
+                });
+                this.title = null; // input 값 초기화
             });
         },
         cancleCompleteTodo(todo) {
-            this.$http.post('/update/todo/done', {
-                is_done: 0,
-                id: todo.id
+            var vm = this;
+            this.$http.post('/update/todo/done/' + todo.id, {
+                is_done: 0
+            }).then(function() {
+                vm.$http.get('/get/todo').then(function(result) {
+                    vm.todos = result.data;
+                });
+                this.title = null; // input 값 초기화
             });
         }
     },

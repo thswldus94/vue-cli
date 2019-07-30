@@ -17,6 +17,7 @@
         <sidebar-item :link="{name: 'Icons', icon: 'ni ni-planet text-blue', path: '/icons'}"/>
         <sidebar-item :link="{name: 'Todo 리스트', icon: 'ni ni-check-bold text-green', path: '/todo'}"/>
         <sidebar-item :link="{name: '악성파일', icon: 'ni ni-notification-70 text-red', path: '/malwares'}"/>
+        <sidebar-item :link="{name: '오늘의 뉴스', icon: 'ni ni-camera-compact text-red', path: '/news'}"/>
         <!-- <sidebar-item :link="{name: 'Maps', icon: 'ni ni-pin-3 text-orange', path: '/maps'}"/> -->
         <sidebar-item :link="{name: 'User Profile', icon: 'ni ni-single-02 text-yellow', path: '/profile'}"/>
         <sidebar-item :link="{name: 'Tables', icon: 'ni ni-bullet-list-67 text-red', path: '/tables'}"/>

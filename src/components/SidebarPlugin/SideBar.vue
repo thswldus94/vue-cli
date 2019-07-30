@@ -52,10 +52,10 @@
                             <span>Support</span>
                         </router-link>
                         <div class="dropdown-divider"></div>
-                        <a href="#!" class="dropdown-item">
-                            <i class="ni ni-user-run"></i>
-                            <span>Logout</span>
-                        </a>
+                        <div class="pl-3" style="font-size: 0.875rem">
+							<i class="ni ni-user-run"></i>
+							<span v-on:click="logOut()" class="ml-3">Logout</span>
+                        </div>
                     </base-dropdown>
                 </ul>
             </slot>
