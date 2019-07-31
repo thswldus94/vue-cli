@@ -59,16 +59,13 @@
                             </base-table>
                         </div>
 
-                        <base-pagination v-bind:page-count="10" v-model="pagination.default" v-on:click="changePage()"></base-pagination>
+                        <div class="mt-3 ml-3 text-right">
+                            <base-pagination v-bind:page-count="pageBlockCount" v-model="pagination.default"></base-pagination>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-
-		<!-- <div id="news-card" v-show="showCard">
-			<p><span class="news-title"></span><span class="news-date"></span></p>
-			<div class="news-content"></div>
-		</div> -->
 
 		<modal :show.sync="modalCard">
 			<h3>{{ newsTitle }}</h3>
@@ -102,7 +99,8 @@ export default {
             newsDate: '',
             pagination: {
                 default: 1
-            }
+            },
+            pageBlockCount: 105 / 15
         }
     },
     methods: {
@@ -129,6 +127,20 @@ export default {
     mounted() {
         this.type == 'dark';
         this.getNewsData();
+    },
+    watch: {
+        pagination: {
+            deep: true,
+            handler(pgn) {
+                var vm = this;
+                var offset = String((pgn.default - 1) * 15);
+                var limit = 15;
+                var url = '/get/news?offset=' + offset + '&limit=' + limit;
+                this.$http.get(url).then(function(result) {
+                    vm.tableData = result.data;
+                });
+            }
+        }
     }
 };
 </script>
