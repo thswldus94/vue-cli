@@ -9,12 +9,14 @@
                 <div class="col">
                     <div class="card shadow">
                         <div class="card-header border-0">
+                            <base-alert type="warning">
+                                <span class="alert-inner--icon"><i class="ni ni-notification-70 mr-2"></i> </span>
+                                <span class="alert-inner--text"><strong>Notice!</strong> Python3 를 이용하여 다음뉴스(중앙일보 섹션)을 크롤링하여 가져오고 있습니다!</span>
+                            </base-alert>
+
                             <div class="row align-items-center">
                                 <div class="col">
                                     <h3 class="mb-0">매일 오후 2시의 HOT 뉴스 (Feat. 다음 뉴스 - 중앙일보)</h3>
-                                </div>
-                                <div class="col text-right">
-                                    <base-button type="primary" size="sm">모두 보기</base-button>
                                 </div>
                             </div>
                         </div>
@@ -59,8 +61,8 @@
                             </base-table>
                         </div>
 
-                        <div class="mt-3 ml-3 text-right">
-                            <base-pagination v-bind:page-count="pageBlockCount" v-model="pagination.default"></base-pagination>
+                        <div class="mt-3 mb-3 text-right">
+                            <base-pagination v-bind:page-count="pageBlockCount" v-model="pagination.default" align="center"></base-pagination>
                         </div>
                     </div>
                 </div>
@@ -92,7 +94,6 @@ export default {
     data() {
         return {
             tableData: [],
-			showCard: false,
 			modalCard: false,
 			newsTitle: '',
 			newsContent: '',
@@ -100,14 +101,20 @@ export default {
             pagination: {
                 default: 1
             },
-            pageBlockCount: 105 / 15
+            pageBlockCount: 1,
+            offset: 0,
+            limit: 10
         }
     },
     methods: {
         getNewsData() {
             var vm = this;
-            this.$http.get('/get/news?offset=0&limit=15').then(function(result) {
-                vm.tableData = result.data;
+            var url = '/get/news?offset=' + this.offset + '&limit=' + this.limit;
+            this.$http.get(url).then(function(result) {
+                // 페이지 카운트 
+                vm.pageBlockCount = Math.ceil(result.data.count / vm.limit);
+                // 데이터
+                vm.tableData = result.data.data;
             });
         },
         gotoLink(link) {
@@ -119,9 +126,6 @@ export default {
 			this.newsDate = news.date.substring(0, 10);
 			
 			this.modalCard = true;
-        },
-        changePage() {
-            //console.log(item);
         }
     },
     mounted() {
@@ -133,11 +137,10 @@ export default {
             deep: true,
             handler(pgn) {
                 var vm = this;
-                var offset = String((pgn.default - 1) * 15);
-                var limit = 15;
-                var url = '/get/news?offset=' + offset + '&limit=' + limit;
+                vm.offset = String((pgn.default - 1) * vm.limit);
+                var url = '/get/news?offset=' + vm.offset + '&limit=' + vm.limit;
                 this.$http.get(url).then(function(result) {
-                    vm.tableData = result.data;
+                    vm.tableData = result.data.data;
                 });
             }
         }
