@@ -43,7 +43,7 @@
                                         {{row.id}}
                                     </td>
                                     <td class="budget">
-                                        <a v-on:click="viewBoard(row.id)">{{row.title}}</a>
+                                        <a href="#" v-on:click="viewBoard(row.id)">{{row.title}}</a>
                                     </td>
                                     <td class="budget">
                                         {{row.uid}}
@@ -138,11 +138,24 @@
                 </template>
             </card>
         </modal>
+
+
+        <modal :show.sync="modals.view">
+            <h3>{{ board.title }}</h3>
+            <h6>작성자: {{ board.user }}</h6>
+			<h6>등록일: {{ board.rdate }}</h6>
+            <h6>수정일: {{ board.udate }}</h6>
+            <p class="mt-3 pt-3" style="border-top: 1px solid #e0e0e0;">{{ board.content }}</p>
+
+            <template slot="footer">
+                <base-button type="link" class="ml-auto" @click="modals.view = false">Close
+                </base-button>
+            </template>
+        </modal>
     </div>
 </template>
 <script>
 const VueUploadComponent = require('vue-upload-component');
-//Vue.component('file-upload', VueUploadComponent);
 
 export default {
     name: 'board',
@@ -157,7 +170,8 @@ export default {
             files: [],
             tableData: [],
 			modals: {
-                add: false
+                add: false,
+                view: false
             },
             form: {
                 title: '',
@@ -166,6 +180,13 @@ export default {
             },
             pagination: {
                 default: 1
+            },
+            board: {
+                title: '',
+                user: '',
+                rdate: '',
+                udate: '',
+                content: ''
             },
             pageBlockCount: 1,
             offset: 0,
@@ -176,7 +197,7 @@ export default {
         FileUpload: VueUploadComponent
     },
     methods: {
-        getNewsData() {
+        getBoardData() {
             var vm = this;
             var url = '/get/board?offset=' + this.offset + '&limit=' + this.limit;
             this.$http.get(url).then(function(result) {
@@ -189,8 +210,8 @@ export default {
         addBoard() {
             var vm = this;
             var url = '/add/board';
-                if (this.form.title != '') {
-                    this.$http.post(url, {
+            if (this.form.title != '') {
+                this.$http.post(url, {
                     title: this.form.title,
                     content: this.form.content,
                     uid: 1,
@@ -199,11 +220,33 @@ export default {
                     if (result.status == 200) {
                         // 모달 닫기
                         vm.modals.add = false;
+
+                        var getUrl = '/get/board?offset=' + vm.offset + '&limit=' + vm.limit;
+                        vm.$http.get(getUrl).then(function(list) {
+                            // 페이지 카운트 
+                            vm.pageBlockCount = Math.ceil(result.data.count / vm.limit);
+                            // 데이터
+                            vm.tableData = list.data.data;
+                        });
                     }
                 });
             } else {
                 alert('제목을 입력 해 주세요.');
             }
+        },
+        viewBoard(id) {
+            var vm = this;
+            var getUrl = '/get/board/view/' + id;
+            vm.$http.get(getUrl).then(function(result) {
+                var board = result.data;
+                vm.board.title = board.title;
+                vm.board.user = board.uname;
+                vm.board.rdate = board.rdate;
+                vm.board.udate = board.udate;
+                vm.board.content = board.content;
+            });
+            
+            this.modals.view = true;
         },
         // file upload methods
         inputFile(newFile, oldFile) {
@@ -225,7 +268,7 @@ export default {
     },
     mounted() {
         this.type == 'dark';
-        this.getNewsData();
+        this.getBoardData();
     },
     watch: {
         pagination: {

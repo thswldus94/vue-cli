@@ -121,8 +121,7 @@ export default {
             }
 
             if (!this.errors.length) {
-                this.$http.post('/add', {
-                    addType : 'register',
+                this.$http.post('/add/register', {
                     id: this.model.id,
                     email: this.model.email,
                     password: this.model.password,
