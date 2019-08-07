@@ -36,6 +36,7 @@
                                     <th>작성자</th>
                                     <th>조회수</th>
                                     <th>수정일</th>
+                                    <th>관리</th>
                                 </template>
 
                                 <template slot-scope="{row}">
@@ -53,6 +54,10 @@
                                     </td>
                                     <td class="budget">
                                         {{row.udate.substring(0, 10)}}
+                                    </td>
+                                    <td class="budget">
+                                        <a href="#" v-on:click="editBoard(row)">수정</a>
+                                        <a href="#" class="ml-2" v-on:click="removeBoard(row.id)">삭제</a>
                                     </td>
                                 </template>
                             </base-table>
@@ -148,8 +153,7 @@
             <p class="mt-3 pt-3" style="border-top: 1px solid #e0e0e0;">{{ board.content }}</p>
 
             <template slot="footer">
-                <base-button type="link" class="ml-auto" @click="modals.view = false">Close
-                </base-button>
+                <base-button type="link" class="ml-auto" @click="modals.view = false">Close</base-button>
             </template>
         </modal>
     </div>
@@ -233,6 +237,22 @@ export default {
             } else {
                 alert('제목을 입력 해 주세요.');
             }
+        },
+        // editBoard(row) {
+            
+        // },
+        removeBoard(id) {
+            var vm = this;
+            var url = "/delete/board/" + id;
+            this.$http.get(url).then(function(result) {
+                var getUrl = '/get/board?offset=' + vm.offset + '&limit=' + vm.limit;
+                vm.$http.get(getUrl).then(function(list) {
+                    // 페이지 카운트 
+                    vm.pageBlockCount = Math.ceil(result.data.count / vm.limit);
+                    // 데이터
+                    vm.tableData = list.data.data;
+                });
+            });
         },
         viewBoard(id) {
             var vm = this;
