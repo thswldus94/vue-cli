@@ -4,59 +4,59 @@
             <!-- Card stats -->
             <div class="row">
                 <div class="col-xl-3 col-lg-6">
-                    <stats-card title="Total traffic"
+                    <stats-card title="오늘의 뉴스 건수"
                                 type="gradient-red"
-                                sub-title="350,897"
+                                v-bind:sub-title="statSummary.newsCount + '건'"
                                 icon="ni ni-active-40"
                                 class="mb-4 mb-xl-0"
                     >
 
                         <template slot="footer">
-                            <span class="text-success mr-2"><i class="fa fa-arrow-up"></i> 3.48%</span>
-                            <span class="text-nowrap">Since last month</span>
+                            <span class="text-success mr-2"><i v-bind:class="'fa fa-arrow-' + statSummary.newsArrow"></i> {{ statSummary.newsPer }}%</span>
+                            <span class="text-nowrap">Since last night</span>
                         </template>
                     </stats-card>
                 </div>
                 <div class="col-xl-3 col-lg-6">
-                    <stats-card title="Total traffic"
+                    <stats-card title="CPU Usage"
                                 type="gradient-orange"
-                                sub-title="2,356"
+                                v-bind:sub-title="statSummary.cpu + '%'"
                                 icon="ni ni-chart-pie-35"
                                 class="mb-4 mb-xl-0"
                     >
 
                         <template slot="footer">
-                            <span class="text-success mr-2"><i class="fa fa-arrow-up"></i> 12.18%</span>
-                            <span class="text-nowrap">Since last month</span>
+                            <span class="text-success mr-2"><i v-bind:class="'fa fa-arrow-' + statSummary.cpuArrow"></i> {{ statSummary.cpuPer }}%</span>
+                            <span class="text-nowrap">Since last 1 minute</span>
                         </template>
                     </stats-card>
                 </div>
                 <div class="col-xl-3 col-lg-6">
-                    <stats-card title="Sales"
+                    <stats-card title="Memory Usage"
                                 type="gradient-green"
-                                sub-title="924"
+                                v-bind:sub-title="statSummary.mem + '%'"
                                 icon="ni ni-money-coins"
                                 class="mb-4 mb-xl-0"
                     >
 
                         <template slot="footer">
-                            <span class="text-danger mr-2"><i class="fa fa-arrow-down"></i> 5.72%</span>
-                            <span class="text-nowrap">Since last month</span>
+                            <span class="text-danger mr-2"><i v-bind:class="'fa fa-arrow-' + statSummary.memArrow"></i> {{ statSummary.memPer }}%</span>
+                            <span class="text-nowrap">Since last 1 minute</span>
                         </template>
                     </stats-card>
 
                 </div>
                 <div class="col-xl-3 col-lg-6">
-                    <stats-card title="Performance"
+                    <stats-card title="Disk Usage (/home)"
                                 type="gradient-info"
-                                sub-title="49,65%"
+                                v-bind:sub-title="statSummary.disk + '%'"
                                 icon="ni ni-chart-bar-32"
                                 class="mb-4 mb-xl-0"
                     >
 
                         <template slot="footer">
-                            <span class="text-success mr-2"><i class="fa fa-arrow-up"></i> 54.8%</span>
-                            <span class="text-nowrap">Since last month</span>
+                            <span class="text-success mr-2"><i v-bind:class="'fa fa-arrow-' + statSummary.diskArrow"></i> {{ statSummary.diskPer }}%</span>
+                            <span class="text-nowrap">Since last 1 minute</span>
                         </template>
                     </stats-card>
                 </div>
@@ -77,18 +77,18 @@
                                 <ul class="nav nav-pills justify-content-end">
                                     <li class="nav-item mr-2 mr-md-0">
                                         <a class="nav-link py-2 px-3"
-                                           href="#"
-                                           :class="{active: bigLineChart.activeIndex === 0}"
-                                           @click.prevent="initBigChart(0)">
+											href="#"
+											:class="{active: bigLineChart.activeIndex === 0}"
+											@click.prevent="initBigChart(0)">
                                             <span class="d-none d-md-block">Month</span>
                                             <span class="d-md-none">M</span>
                                         </a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link py-2 px-3"
-                                           href="#"
-                                           :class="{active: bigLineChart.activeIndex === 1}"
-                                           @click.prevent="initBigChart(1)">
+											href="#"
+											:class="{active: bigLineChart.activeIndex === 1}"
+											@click.prevent="initBigChart(1)">
                                             <span class="d-none d-md-block">Week</span>
                                             <span class="d-md-none">W</span>
                                         </a>
@@ -142,65 +142,100 @@
     </div>
 </template>
 <script>
-  // Charts
-  import * as chartConfigs from '@/components/Charts/config';
-  import LineChart from '@/components/Charts/LineChart';
-  import BarChart from '@/components/Charts/BarChart';
+// Charts
+import * as chartConfigs from '@/components/Charts/config';
+import LineChart from '@/components/Charts/LineChart';
+import BarChart from '@/components/Charts/BarChart';
 
-  // Tables
-  import SocialTrafficTable from './Dashboard/SocialTrafficTable';
-  import PageVisitsTable from './Dashboard/PageVisitsTable';
+// Tables
+import SocialTrafficTable from './Dashboard/SocialTrafficTable';
+import PageVisitsTable from './Dashboard/PageVisitsTable';
 
-  export default {
-    components: {
-      LineChart,
-      BarChart,
-      PageVisitsTable,
-      SocialTrafficTable,
-    },
+export default {
+	components: {
+		LineChart,
+		BarChart,
+		PageVisitsTable,
+		SocialTrafficTable,
+	},
     data() {
-      return {
-        bigLineChart: {
-          allData: [
-            [0, 20, 10, 30, 15, 40, 20, 60, 60],
-            [0, 20, 5, 25, 10, 30, 15, 40, 40]
-          ],
-          activeIndex: 0,
-          chartData: {
-            datasets: [],
-            labels: [],
-          },
-          extraOptions: chartConfigs.blueChartOptions,
-        },
-        redBarChart: {
-          chartData: {
-            labels: ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-            datasets: [{
-              label: 'Sales',
-              data: [25, 20, 30, 22, 17, 29]
-            }]
-          }
-        }
-      };
-    },
-    methods: {
-      initBigChart(index) {
-        let chartData = {
-          datasets: [
-            {
-              label: 'Performance',
-              data: this.bigLineChart.allData[index]
-            }
-          ],
-          labels: ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-        };
-        this.bigLineChart.chartData = chartData;
-        this.bigLineChart.activeIndex = index;
-      }
-    },
-    mounted() {
-      this.initBigChart(0);
-    }
-  };
+		return {
+			bigLineChart: {
+				allData: [
+					[0, 20, 10, 30, 15, 40, 20, 60, 60],
+					[0, 20, 5, 25, 10, 30, 15, 40, 40]
+				],
+				activeIndex: 0,
+				chartData: {
+				datasets: [],
+				labels: [],
+			},
+			extraOptions: chartConfigs.blueChartOptions,
+			},
+			redBarChart: {
+				chartData: {
+					labels: ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+					datasets: [{
+						label: 'Sales',
+						data: [25, 20, 30, 22, 17, 29]
+					}]
+				}
+			},
+			statSummary: {
+				newsCount: '0',
+				cpu: '0.0',
+				mem: '0.0',
+				disk: '0.0',
+				newsPer: '0.00',
+				cpuPer: '0.00',
+				memPer: '0.00',
+				diskPer: '0.00',
+				newsArrow: '',
+				cpuArrow: '',
+				memArrow: '',
+				diskArrow: ''
+			}
+		};
+	},
+	methods: {
+		initBigChart(index) {
+			let chartData = {
+				datasets: [
+					{
+						label: 'Performance',
+						data: this.bigLineChart.allData[index]
+					}
+				],
+				labels: ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+			};
+			this.bigLineChart.chartData = chartData;
+			this.bigLineChart.activeIndex = index;
+		},
+		getSummary() {
+			var vm = this;
+			this.$http.get('/get/stat').then(function(result) {
+				vm.statSummary.newsCount = result.data.newsCount.toString();
+				vm.statSummary.newsPer = result.data.newsPer;
+				vm.statSummary.newsArrow = result.data.newsArrow;
+
+				vm.statSummary.cpu = result.data.cpu.toString();
+				vm.statSummary.cpuPer = result.data.cpuPer;
+				vm.statSummary.cpuArrow = result.data.cpuArrow;
+
+				vm.statSummary.mem = result.data.mem.toString();
+				vm.statSummary.memPer = result.data.memPer;
+				vm.statSummary.memArrow = result.data.memArrow;
+
+				vm.statSummary.disk = result.data.disk.toString();
+				vm.statSummary.diskPer = result.data.diskPer;
+				vm.statSummary.diskArrow = result.data.diskArrow;
+			});
+		}
+	},
+	mounted() {
+		this.initBigChart(0);
+		this.getSummary();
+	}
+};
 </script>
 <style></style>
