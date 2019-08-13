@@ -67,7 +67,7 @@
         <div class="container-fluid mt--7">
             <div class="row">
                 <div class="col-xl-8 mb-5 mb-xl-0">
-                    <card type="default" header-classes="bg-transparent">
+                    <!-- <card type="default" header-classes="bg-transparent">
                         <div slot="header" class="row align-items-center">
                             <div class="col">
                                 <h6 class="text-light text-uppercase ls-1 mb-1">Overview</h6>
@@ -104,10 +104,11 @@
                         >
                         </line-chart>
 
-                    </card>
+                    </card> -->
+                    <highcharts :options="chartOptions" :highcharts="hcInstance"></highcharts>
                 </div>
 
-                <div class="col-xl-4">
+                <!-- <div class="col-xl-4">
                     <card header-classes="bg-transparent">
                         <div slot="header" class="row align-items-center">
                             <div class="col">
@@ -123,64 +124,40 @@
                         >
                         </bar-chart>
                     </card>
-                </div>
+                </div> -->
             </div>
             <!-- End charts-->
 
             <!--Tables-->
-            <div class="row mt-5">
+            <!-- <div class="row mt-5">
                 <div class="col-xl-8 mb-5 mb-xl-0">
                     <page-visits-table></page-visits-table>
                 </div>
                 <div class="col-xl-4">
                     <social-traffic-table></social-traffic-table>
                 </div>
-            </div>
+            </div> -->
             <!--End tables-->
         </div>
 
     </div>
 </template>
 <script>
-// Charts
-import * as chartConfigs from '@/components/Charts/config';
-import LineChart from '@/components/Charts/LineChart';
-import BarChart from '@/components/Charts/BarChart';
+//import axios from 'axios'
 
-// Tables
-import SocialTrafficTable from './Dashboard/SocialTrafficTable';
-import PageVisitsTable from './Dashboard/PageVisitsTable';
+// Highcharts
+import Vue from 'vue'
+import Highcharts from 'highcharts'
+import HighchartsVue from 'highcharts-vue'
+
+Vue.use(HighchartsVue, {
+	highcharts: Highcharts
+});
+
 
 export default {
-	components: {
-		LineChart,
-		BarChart,
-		PageVisitsTable,
-		SocialTrafficTable,
-	},
     data() {
 		return {
-			bigLineChart: {
-				allData: [
-					[0, 20, 10, 30, 15, 40, 20, 60, 60],
-					[0, 20, 5, 25, 10, 30, 15, 40, 40]
-				],
-				activeIndex: 0,
-				chartData: {
-				datasets: [],
-				labels: [],
-			},
-			extraOptions: chartConfigs.blueChartOptions,
-			},
-			redBarChart: {
-				chartData: {
-					labels: ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-					datasets: [{
-						label: 'Sales',
-						data: [25, 20, 30, 22, 17, 29]
-					}]
-				}
-			},
 			statSummary: {
 				newsCount: '0',
 				cpu: '0.0',
@@ -194,23 +171,15 @@ export default {
 				cpuArrow: '',
 				memArrow: '',
 				diskArrow: ''
-			}
+            },
+            hcInstance: Highcharts,
+            chartOptions: []
 		};
-	},
+    },
+    // created() {
+    //     this.getMemoryData();
+    // },
 	methods: {
-		initBigChart(index) {
-			let chartData = {
-				datasets: [
-					{
-						label: 'Performance',
-						data: this.bigLineChart.allData[index]
-					}
-				],
-				labels: ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-			};
-			this.bigLineChart.chartData = chartData;
-			this.bigLineChart.activeIndex = index;
-		},
 		getSummary() {
 			var vm = this;
 			this.$http.get('/get/stat').then(function(result) {
@@ -230,12 +199,87 @@ export default {
 				vm.statSummary.diskPer = result.data.diskPer;
 				vm.statSummary.diskArrow = result.data.diskArrow;
 			});
-		}
+        },
+        getMemoryData() {
+            return this.$http.get('/get/stat/system');
+        },
+        getIntervalData() {
+            // var vm = this;
+            // //var chart = new Highcharts.Chart(this.chartOptions);
+            // console.log(this.chartOptions);
+            
+            // setInterval(async function () {
+            //     var newData = await vm.getMemoryData();
+            //     //console.log(newData.data[newData.length - 1]);
+            //     var last = newData.data.pop();
+            //     console.log(last);
+
+            //     vm.chartOptions.series.addPoint([last.x, last.y], true, true);
+            //     //vm.chartOptions.series[0].data = [last.x, last.y];
+            // }, 1000);        
+        }
 	},
-	mounted() {
-		this.initBigChart(0);
-		this.getSummary();
-	}
+	async mounted() {
+        // 상단 요약
+        this.getSummary();
+
+        // 차트 데이터
+        var memoryData = await this.getMemoryData();
+        
+        this.chartOptions = {
+            chart: {
+                type: 'spline',
+                animation: Highcharts.svg, // don't animate in old IE
+                marginRight: 10,
+                // events: {
+                //     load: function () {
+                //         setInterval( function () {
+                //             var series = this.series[0];
+                //             var newData =  vm.getMemoryData();
+                //             //console.log(newData.data[newData.length - 1]);
+                //             var last = newData.data.pop();
+                //             console.log(last);
+
+                //             series.addPoint([last.x, last.y], true, true);
+                //         }, 1000);
+                //     }
+                // }
+            },
+            time: {
+                useUTC: false
+            },
+            title: {
+                text: 'Memory 변화 추이'
+            },
+            xAxis: {
+                type: 'datetime',
+                tickPixelInterval: 150
+            },
+            yAxis: {
+                title: {
+                    text: 'Value'
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            tooltip: {
+                headerFormat: '<b>{series.name}</b><br/>',
+                pointFormat: '{point.x:%Y-%m-%d %H:%M:%S}<br/>{point.y:.2f}'
+            },
+            legend: {
+                enabled: false
+            },
+            series: [{
+                name: 'Random data',
+                data: memoryData.data
+            }]
+        };
+
+        this.getIntervalData();
+    }
 };
 </script>
 <style></style>
