@@ -55,7 +55,7 @@
                     >
 
                         <template slot="footer">
-                            <span class="text-success mr-2"><i v-bind:class="'fa fa-arrow-' + statSummary.diskArrow"></i> {{ statSummary.diskPer }}%</span>
+                            <!-- <span class="text-success mr-2"><i v-bind:class="'fa fa-arrow-' + statSummary.diskArrow"></i> {{ statSummary.diskPer }}%</span> -->
                             <span class="text-nowrap">Since last 1 minute</span>
                         </template>
                     </stats-card>
@@ -66,7 +66,7 @@
         <!--Charts-->
         <div class="container-fluid mt--7">
             <div class="row">
-                <div class="col-xl-8 mb-5 mb-xl-0">
+                <div class="col-sm-3 mb-5 mb-xl-0">
                     <!-- <card type="default" header-classes="bg-transparent">
                         <div slot="header" class="row align-items-center">
                             <div class="col">
@@ -105,7 +105,9 @@
                         </line-chart>
 
                     </card> -->
-                    <highcharts :options="chartOptions" :highcharts="hcInstance"></highcharts>
+                    <card header-classes="bg-transparent">
+                        <highcharts :options="chartOptions" :highcharts="hcInstance" v-bind:style="chartClass"></highcharts>
+                    </card>
                 </div>
 
                 <!-- <div class="col-xl-4">
@@ -137,6 +139,52 @@
                     <social-traffic-table></social-traffic-table>
                 </div>
             </div> -->
+            <div class="row">
+                <div class="col-xl-6 mb-5 mb-xl-0">
+                    <div class="row mt-3">
+                        <div class="col-sm-12 mb-5">
+                            <div class="card shadow">
+                                <div class="card-header border-0">
+                                    <base-alert type="warning">
+                                        <span class="alert-inner--icon"><i class="ni ni-notification-70 mr-2"></i> </span>
+                                        <span class="alert-inner--text">매일 오후 2시의 HOT 뉴스 (Feat. 다음 뉴스 - 중앙일보)</span>
+                                    </base-alert>
+
+                                    <div class="row align-items-center">
+                                        <div class="col">
+                                            <h3 class="mb-0"></h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-1">
+                                    <div class="col-sm-12 mb-5">
+                                        <div class="table-responsive">
+                                            <base-table class="table align-items-center table-flush"
+                                                :thead-classes="type === 'dark' ? 'thead-dark': 'thead-light'"
+                                                tbody-classes="list"
+                                                v-bind:data="tableData">
+                                                <template slot="columns">
+                                                    <th>ID</th>
+                                                    <th>기사 제목</th>
+                                                </template>
+
+                                                <template slot-scope="{row}">
+                                                    <td class="budget">
+                                                        {{row.id}}
+                                                    </td>
+                                                    <td class="budget">
+                                                        {{row.title}}
+                                                    </td>
+                                                </template>
+                                            </base-table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <!--End tables-->
         </div>
 
@@ -156,6 +204,12 @@ Vue.use(HighchartsVue, {
 
 
 export default {
+    props: {
+      type: {
+        type: String
+      },
+      title: String
+    },
     data() {
 		return {
 			statSummary: {
@@ -172,8 +226,14 @@ export default {
 				memArrow: '',
 				diskArrow: ''
             },
+            chartClass: {
+                height: '200px'
+            },
             hcInstance: Highcharts,
-            chartOptions: []
+            chartOptions: [],
+            tableData: [],
+            offset: 0,
+            limit: 5
 		};
     },
     // created() {
@@ -197,7 +257,7 @@ export default {
 
 				vm.statSummary.disk = result.data.disk.toString();
 				vm.statSummary.diskPer = result.data.diskPer;
-				vm.statSummary.diskArrow = result.data.diskArrow;
+				//vm.statSummary.diskArrow = result.data.diskArrow;
 			});
         },
         getMemoryData() {
@@ -217,6 +277,16 @@ export default {
             //     vm.chartOptions.series.addPoint([last.x, last.y], true, true);
             //     //vm.chartOptions.series[0].data = [last.x, last.y];
             // }, 1000);        
+        },
+        getNewsData() {
+            var vm = this;
+            var url = '/get/news?offset=' + this.offset + '&limit=' + this.limit;
+            this.$http.get(url).then(function(result) {
+                // 페이지 카운트 
+                vm.pageBlockCount = Math.ceil(result.data.count / vm.limit);
+                // 데이터
+                vm.tableData = result.data.data;
+            });
         }
 	},
 	async mounted() {
@@ -279,6 +349,9 @@ export default {
         };
 
         this.getIntervalData();
+
+        this.type == 'dark';
+        this.getNewsData();
     }
 };
 </script>
