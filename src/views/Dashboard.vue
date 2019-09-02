@@ -66,81 +66,22 @@
         <!--Charts-->
         <div class="container-fluid mt--7">
             <div class="row">
-                <div class="col-sm-3 mb-5 mb-xl-0">
-                    <!-- <card type="default" header-classes="bg-transparent">
-                        <div slot="header" class="row align-items-center">
-                            <div class="col">
-                                <h6 class="text-light text-uppercase ls-1 mb-1">Overview</h6>
-                                <h5 class="h3 text-white mb-0">Sales value</h5>
-                            </div>
-                            <div class="col">
-                                <ul class="nav nav-pills justify-content-end">
-                                    <li class="nav-item mr-2 mr-md-0">
-                                        <a class="nav-link py-2 px-3"
-											href="#"
-											:class="{active: bigLineChart.activeIndex === 0}"
-											@click.prevent="initBigChart(0)">
-                                            <span class="d-none d-md-block">Month</span>
-                                            <span class="d-md-none">M</span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link py-2 px-3"
-											href="#"
-											:class="{active: bigLineChart.activeIndex === 1}"
-											@click.prevent="initBigChart(1)">
-                                            <span class="d-none d-md-block">Week</span>
-                                            <span class="d-md-none">W</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <line-chart
-                                :height="350"
-                                ref="bigChart"
-                                :chart-data="bigLineChart.chartData"
-                                :extra-options="bigLineChart.extraOptions"
-                        >
-                        </line-chart>
-
-                    </card> -->
+                <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 mb-5 mb-xl-0">
                     <card header-classes="bg-transparent">
-                        <highcharts :options="chartOptions" :highcharts="hcInstance" v-bind:style="chartClass"></highcharts>
+                        <highcharts :options="memChartOptions" :highcharts="memInstance" v-bind:style="chartClass"></highcharts>
                     </card>
                 </div>
 
-                <!-- <div class="col-xl-4">
+                <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 mb-5 mb-xl-0">
                     <card header-classes="bg-transparent">
-                        <div slot="header" class="row align-items-center">
-                            <div class="col">
-                                <h6 class="text-uppercase text-muted ls-1 mb-1">Performance</h6>
-                                <h5 class="h3 mb-0">Total orders</h5>
-                            </div>
-                        </div>
-
-                        <bar-chart
-                                :height="350"
-                                ref="barChart"
-                                :chart-data="redBarChart.chartData"
-                        >
-                        </bar-chart>
+                        <highcharts :options="cpuChartOptions" :highcharts="cpuInstance" v-bind:style="chartClass"></highcharts>
                     </card>
-                </div> -->
+                </div>
             </div>
             <!-- End charts-->
 
-            <!--Tables-->
-            <!-- <div class="row mt-5">
-                <div class="col-xl-8 mb-5 mb-xl-0">
-                    <page-visits-table></page-visits-table>
-                </div>
-                <div class="col-xl-4">
-                    <social-traffic-table></social-traffic-table>
-                </div>
-            </div> -->
             <div class="row">
-                <div class="col-xl-6 mb-5 mb-xl-0">
+                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-5 mb-xl-0">
                     <div class="row mt-3">
                         <div class="col-sm-12 mb-5">
                             <div class="card shadow">
@@ -212,6 +153,11 @@ export default {
     },
     data() {
 		return {
+            // 차트 인스턴스
+            memInstance: Highcharts,
+            cpuInstance: Highcharts,
+            memChartOptions: {},
+            cpuChartOptions: {},
 			statSummary: {
 				newsCount: '0',
 				cpu: '0.0',
@@ -229,8 +175,6 @@ export default {
             chartClass: {
                 height: '200px'
             },
-            hcInstance: Highcharts,
-            chartOptions: [],
             tableData: [],
             offset: 0,
             limit: 5
@@ -260,23 +204,21 @@ export default {
 				//vm.statSummary.diskArrow = result.data.diskArrow;
 			});
         },
-        getMemoryData() {
+        getSystemData() {
             return this.$http.get('/get/stat/system');
         },
         getIntervalData() {
-            // var vm = this;
-            // //var chart = new Highcharts.Chart(this.chartOptions);
-            // console.log(this.chartOptions);
-            
-            // setInterval(async function () {
-            //     var newData = await vm.getMemoryData();
-            //     //console.log(newData.data[newData.length - 1]);
-            //     var last = newData.data.pop();
-            //     console.log(last);
+            var vm = this;
+            setInterval(async function() {
+                var newData = await vm.getSystemData();
 
-            //     vm.chartOptions.series.addPoint([last.x, last.y], true, true);
-            //     //vm.chartOptions.series[0].data = [last.x, last.y];
-            // }, 1000);        
+                var memLast = newData.data.mem.pop();
+                var cpuLast = newData.data.cpu.pop();
+
+                vm.memInstance.charts[0].series[0].addPoint([memLast.x, memLast.y], true, true);
+                vm.cpuInstance.charts[1].series[0].addPoint([cpuLast.x, cpuLast.y], true, true);
+
+            }, 1000 * 10);
         },
         getNewsData() {
             var vm = this;
@@ -293,27 +235,14 @@ export default {
         // 상단 요약
         this.getSummary();
 
-        // 차트 데이터
-        var memoryData = await this.getMemoryData();
+        // 시스템 데이터
+        var systemData = await this.getSystemData();
         
-        this.chartOptions = {
+        this.memChartOptions = {
             chart: {
                 type: 'spline',
                 animation: Highcharts.svg, // don't animate in old IE
                 marginRight: 10,
-                // events: {
-                //     load: function () {
-                //         setInterval( function () {
-                //             var series = this.series[0];
-                //             var newData =  vm.getMemoryData();
-                //             //console.log(newData.data[newData.length - 1]);
-                //             var last = newData.data.pop();
-                //             console.log(last);
-
-                //             series.addPoint([last.x, last.y], true, true);
-                //         }, 1000);
-                //     }
-                // }
             },
             time: {
                 useUTC: false
@@ -343,15 +272,56 @@ export default {
                 enabled: false
             },
             series: [{
-                name: 'Random data',
-                data: memoryData.data
+                name: 'Memory Data',
+                data: systemData.data.mem
             }]
         };
 
-        this.getIntervalData();
+        this.cpuChartOptions = {
+            chart: {
+                type: 'spline',
+                animation: Highcharts.svg, // don't animate in old IE
+                marginRight: 10,
+            },
+            time: {
+                useUTC: false
+            },
+            title: {
+                text: 'CPU 변화 추이'
+            },
+            xAxis: {
+                type: 'datetime',
+                tickPixelInterval: 150
+            },
+            yAxis: {
+                title: {
+                    text: 'Value'
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            tooltip: {
+                headerFormat: '<b>{series.name}</b><br/>',
+                pointFormat: '{point.x:%Y-%m-%d %H:%M:%S}<br/>{point.y:.2f}'
+            },
+            legend: {
+                enabled: false
+            },
+            series: [{
+                name: 'CPU Data',
+                data: systemData.data.cpu
+            }]
+        };
+
 
         this.type == 'dark';
         this.getNewsData();
+
+
+        this.getIntervalData();
     }
 };
 </script>
