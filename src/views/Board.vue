@@ -44,10 +44,11 @@
                                         {{row.id}}
                                     </td>
                                     <td class="budget">
-                                        <a href="#" v-on:click="viewBoard(row.id)">{{row.title}}</a>
+                                        <!-- <a href="#" v-on:click="viewBoard(row.id)">{{row.title}}</a> -->
+                                        <a v-bind:href="'/board/view/' + row.id">{{row.title}}</a>
                                     </td>
                                     <td class="budget">
-                                        {{row.uid}}
+                                        {{row.user}}
                                     </td>
                                     <td class="budget">
                                         {{row.hit}}

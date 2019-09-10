@@ -55,6 +55,11 @@ export default new Router({
                     component: () => import( /* webpackChunkName: "demo" */ './views/Board.vue')
                 },
                 {
+                    path: '/board/view/:id',
+                    name: 'boardview',
+                    component: () => import( /* webpackChunkName: "demo" */ './views/BoardView.vue')
+                },
+                {
                     path: '/todo',
                     name: 'Todo',
                     component: () => import( /* webpackChunkName: "demo" */ './views/Todo.vue')
