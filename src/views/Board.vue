@@ -20,7 +20,8 @@
                                 </div>
 
                                 <div class="col text-right">
-                                    <base-button type="primary" size="sm" @click="modals.add = true"><i class="ni ni-fat-add"></i> 등록</base-button>
+                                    <!-- <base-button type="primary" size="sm" @click="modals.add = true"><i class="ni ni-fat-add"></i> 등록</base-button> -->
+                                    <base-button type="primary" size="sm" v-on:click="addBoard()"><i class="ni ni-fat-add"></i> 등록</base-button>
                                 </div>
                             </div>
                         </div>
@@ -36,7 +37,7 @@
                                     <th>작성자</th>
                                     <th>조회수</th>
                                     <th>수정일</th>
-                                    <th>관리</th>
+                                    <!-- <th>관리</th> -->
                                 </template>
 
                                 <template slot-scope="{row}">
@@ -45,7 +46,7 @@
                                     </td>
                                     <td class="budget">
                                         <!-- <a href="#" v-on:click="viewBoard(row.id)">{{row.title}}</a> -->
-                                        <a v-bind:href="'/board/view/' + row.id">{{row.title}}</a>
+                                        <a v-bind:href="'/board/view/' + row.id" target="_blank">{{row.title}}</a>
                                     </td>
                                     <td class="budget">
                                         {{row.user}}
@@ -54,12 +55,12 @@
                                         {{row.hit}}
                                     </td>
                                     <td class="budget">
-                                        {{row.udate.substring(0, 10)}}
+                                        {{row.udate}}
                                     </td>
-                                    <td class="budget">
+                                    <!-- <td class="budget">
                                         <a href="#" v-on:click="editBoard(row)">수정</a>
                                         <a href="#" class="ml-2" v-on:click="removeBoard(row.id)">삭제</a>
-                                    </td>
+                                    </td> -->
                                 </template>
                             </base-table>
                         </div>
@@ -213,78 +214,7 @@ export default {
             });
         },
         addBoard() {
-            var vm = this;
-            var url = '/add/board';
-            if (this.form.title != '') {
-                this.$http.post(url, {
-                    title: this.form.title,
-                    content: this.form.content,
-                    uid: 1,
-                    file_upload: this.form.file_upload
-                }).then(function(result) {
-                    if (result.status == 200) {
-                        // 모달 닫기
-                        vm.modals.add = false;
-
-                        var getUrl = '/get/board?offset=' + vm.offset + '&limit=' + vm.limit;
-                        vm.$http.get(getUrl).then(function(list) {
-                            // 페이지 카운트 
-                            vm.pageBlockCount = Math.ceil(result.data.count / vm.limit);
-                            // 데이터
-                            vm.tableData = list.data.data;
-                        });
-                    }
-                });
-            } else {
-                alert('제목을 입력 해 주세요.');
-            }
-        },
-        // editBoard(row) {
-            
-        // },
-        removeBoard(id) {
-            var vm = this;
-            var url = "/delete/board/" + id;
-            this.$http.get(url).then(function(result) {
-                var getUrl = '/get/board?offset=' + vm.offset + '&limit=' + vm.limit;
-                vm.$http.get(getUrl).then(function(list) {
-                    // 페이지 카운트 
-                    vm.pageBlockCount = Math.ceil(result.data.count / vm.limit);
-                    // 데이터
-                    vm.tableData = list.data.data;
-                });
-            });
-        },
-        viewBoard(id) {
-            var vm = this;
-            var getUrl = '/get/board/view/' + id;
-            vm.$http.get(getUrl).then(function(result) {
-                var board = result.data;
-                vm.board.title = board.title;
-                vm.board.user = board.uname;
-                vm.board.rdate = board.rdate;
-                vm.board.udate = board.udate;
-                vm.board.content = board.content;
-            });
-            
-            this.modals.view = true;
-        },
-        // file upload methods
-        inputFile(newFile, oldFile) {
-            if (newFile && oldFile && !newFile.active && oldFile.active) {
-                // get response data
-                if (newFile.xhr) {
-                    // get the response status code
-                    this.form.file_upload = newFile.response.filename;
-                }
-            }
-        },
-        inputFilter(newFile) {
-            newFile.blob = ''
-            // var URL = window.URL || window.webkitURL;
-            // if (URL && URL.createObjectURL) {
-            //     newFile.blob = URL.createObjectURL(newFile.file);
-            // }
+            location.href = '/board/post';
         }
     },
     mounted() {

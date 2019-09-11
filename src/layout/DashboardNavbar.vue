@@ -69,6 +69,7 @@
         activeNotifications: false,
         showMenu: false,
         searchQuery: '',
+        uid: null,
         id: null,
         email: null,
         showLogout: false
@@ -91,16 +92,19 @@
       }
     },
     mounted() {
-		var vm = this;
-		this.$http.get('/api/session').then(function(result) {
-			if (result.data.id.length > 0 && result.data.email.length > 0) {
-				vm.id = result.data.id;
-				vm.email = result.data.email;
-				vm.showLogout = true;
-			} else {
-				vm.showLogout = false;
-			}
-		});
+      var vm = this;
+      this.$http.get('/api/session').then(function(result) {
+        if (Object.keys(result.data).length !== 0) {
+          if (result.data.id.length > 0 && result.data.email.length > 0) { 
+            vm.uid = result.data.uid;
+            vm.id = result.data.id;
+            vm.email = result.data.email;
+            vm.showLogout = true;
+          } else {
+            vm.showLogout = false;
+          }
+        }
+      });
     }
   };
 </script>
