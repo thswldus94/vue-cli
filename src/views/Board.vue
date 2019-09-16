@@ -21,7 +21,7 @@
 
                                 <div class="col text-right">
                                     <!-- <base-button type="primary" size="sm" @click="modals.add = true"><i class="ni ni-fat-add"></i> 등록</base-button> -->
-                                    <base-button type="primary" size="sm" v-on:click="addBoard()"><i class="ni ni-fat-add"></i> 등록</base-button>
+                                    <base-button type="primary" size="sm" v-on:click="addBoard()"><i class="fa fa-plus"></i> 등록</base-button>
                                 </div>
                             </div>
                         </div>
@@ -72,96 +72,9 @@
                 </div>
             </div>
         </div>
-
-		<modal :show.sync="modals.add"
-               body-classes="p-0"
-               modal-classes="modal-dialog-centered modal-md">
-            <card type="secondary" shadow
-                  header-classes="bg-white pb-5"
-                  body-classes="px-lg-5 py-lg-5"
-                  class="border-0">
-                <template>
-                    <div class="text-muted mb-3">
-                        <h4>게시글 등록</h4>
-                    </div>
-                </template>
-                <template>
-                    <form role="form" v-on:submit.prevent="addBoard()">
-                        <base-input class="mb-3" placeholder="제목" required
-                                v-model="form.title" name="title"></base-input>
-                        <textarea class="form-control mb-3" id="exampleFormControlTextarea1"
-                                rows="3" placeholder="본문"
-                                name="content" v-model="form.content"></textarea>
-
-                        <div>
-                            <!-- 기본 file input name은 "file" -->
-                            <file-upload
-                                ref="upload"
-                                v-model="files"
-                                post-action="/upload/board"
-                                @input-file="inputFile"
-                                @input-filter="inputFilter"
-                                class="btn btn-info btn-sm"
-                            >
-                                <i class="ni ni-fat-add mr-2"></i> 파일 선택
-                            </file-upload>
-
-                            <base-button 
-                                type="primary"
-                                class="mb-0 btn-upload"
-                                size="sm"
-                                v-show="!$refs.upload || !$refs.upload.active"
-                                @click.prevent="$refs.upload.active = true"
-                            >
-                                <i class="ni ni-cloud-upload-96 mr-2"></i> 업로드 시작
-                            </base-button>
-                            
-                            <base-button
-                                type="warning"
-                                class="mb-0 btn-upload"
-                                size="sm"
-                                v-show="$refs.upload && $refs.upload.active"
-                                @click.prevent="$refs.upload.active = false"
-                            >
-                                <i class="ni ni-fat-remove mr-2"></i> 업로드 중지
-                            </base-button>
-                        </div>
-
-                        <div v-for="file in files" :key="file.id">
-                            <template>
-                                <small>{{file.name}}</small> -
-                                <small>({{file.size}} Bytes)</small>
-                                <small v-if="file.error" class="text-red"> - {{file.error}}</small>
-                                <small v-else-if="file.success" class="text-green"> - success</small>
-                                <small v-else-if="file.active" class="text-yellow"> - uploading...</small>
-                                <small v-else></small>
-                            </template>
-                        </div>
-
-                        <div class="text-center">
-                            <base-button type="primary" class="my-4 mb-2" nativeType="submit">등록</base-button>
-                        </div>
-                    </form>
-                </template>
-            </card>
-        </modal>
-
-
-        <modal :show.sync="modals.view">
-            <h3>{{ board.title }}</h3>
-            <h6>작성자: {{ board.user }}</h6>
-			<h6>등록일: {{ board.rdate }}</h6>
-            <h6>수정일: {{ board.udate }}</h6>
-            <p class="mt-3 pt-3" style="border-top: 1px solid #e0e0e0;">{{ board.content }}</p>
-
-            <template slot="footer">
-                <base-button type="link" class="ml-auto" @click="modals.view = false">Close</base-button>
-            </template>
-        </modal>
     </div>
 </template>
 <script>
-const VueUploadComponent = require('vue-upload-component');
 
 export default {
     name: 'board',
@@ -199,13 +112,10 @@ export default {
             limit: 10
         }
     },
-    components: {
-        FileUpload: VueUploadComponent
-    },
     methods: {
         getBoardData() {
             var vm = this;
-            var url = '/get/board?offset=' + this.offset + '&limit=' + this.limit;
+            var url = `/get/board?offset=${this.offset}&limit=${this.limit}`;
             this.$http.get(url).then(function(result) {
                 // 페이지 카운트 
                 vm.pageBlockCount = Math.ceil(result.data.count / vm.limit);
@@ -227,7 +137,7 @@ export default {
             handler(pgn) {
                 var vm = this;
                 vm.offset = String((pgn.default - 1) * vm.limit);
-                var url = '/get/board?offset=' + vm.offset + '&limit=' + vm.limit;
+                var url = `/get/board?offset=${vm.offset}&limit=${vm.limit}`;
                 this.$http.get(url).then(function(result) {
                     vm.tableData = result.data.data;
                 });
@@ -236,46 +146,3 @@ export default {
     }
 };
 </script>
-<style>
-/* .filebox input[type="file"] {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip:rect(0,0,0,0);
-    border: 0;
-}
-.filebox .btn-upload {
-    display: inline-block; 
-    padding: .5em .75em; 
-    color: #999; 
-    font-size: inherit; 
-    line-height: normal; 
-    vertical-align: middle; 
-    background-color: #fdfdfd; 
-    cursor: pointer; 
-    border: 1px solid #ebebeb; 
-    border-bottom-color: #e2e2e2; 
-    border-radius: .25em; 
-} 
-
-.filebox .upload-name {
-    display: inline-block; 
-    padding: .5em .75em; 
-    
-    font-size: inherit; 
-    font-family: inherit; 
-    line-height: normal; 
-    vertical-align: middle; 
-    background-color: #fff; 
-    border: 1px solid #ebebeb; 
-    border-bottom-color: #e2e2e2; 
-    border-radius: .25em; 
-    -webkit-appearance: none; 
-    
-    -moz-appearance: none; 
-    appearance: none;
-} */
-</style>

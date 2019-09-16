@@ -11,13 +11,17 @@
                         <form role="form" v-on:submit.prevent="doAction()">
                             <div class="card-header border-0">
                                 <div class="row align-items-center pb-1" style="border-bottom: 1px dashed #e0e0e0;">
-                                    <div class="col">
+                                    <div class="col-sm-3">
+                                        <h4 class="text-uppercase text-muted">제목</h4>
+                                    </div>
+                                    <div class="col-sm-9">
                                         <base-input class="mb-3" placeholder="제목" required v-model="form.title" name="title"></base-input>
                                     </div>
                                 </div>
 
                                 <div class="row align-items-center mt-4">
                                     <div class="col-lg-12 align-items-left">
+                                        <h4 class="text-uppercase text-muted">내용</h4>
                                         <textarea class="form-control mb-3" id="exampleFormControlTextarea1" rows="3" placeholder="본문" name="content" v-model="form.content"></textarea>
                                     </div>
                                 </div>
@@ -33,7 +37,7 @@
                                             @input-filter="inputFilter"
                                             class="btn btn-info btn-sm"
                                         >
-                                            <i class="ni ni-fat-add mr-2"></i> 파일 선택
+                                            <i class="fa fa-plus"></i>  파일 선택
                                         </file-upload>
 
                                         <base-button 
@@ -43,7 +47,7 @@
                                             v-show="!$refs.upload || !$refs.upload.active"
                                             @click.prevent="$refs.upload.active = true"
                                         >
-                                            <i class="ni ni-cloud-upload-96 mr-2"></i> 업로드 시작
+                                            <i class="fa fa-upload"></i>  업로드 시작
                                         </base-button>
                                         
                                         <base-button
@@ -79,12 +83,12 @@
 
                                 <div class="row align-items-center mt-4">
                                     <div class="col-lg-12" style="text-align: right;">
-                                        <base-button outline type="primary" size="sm" v-on:click="addBoard()" v-show="showAddButton">
-                                            <i class="ni ni-zoom-split-in"></i> 
+                                        <base-button type="primary" size="sm" v-on:click="addBoard()" v-show="showAddButton">
+                                            <i class="fa fa-check"></i> 
                                             등록
                                         </base-button>
-                                        <base-button outline type="success" size="sm" v-on:click="editBoard()" v-show="showEditButton">
-                                            <i class="ni ni-zoom-split-in"></i> 
+                                        <base-button type="success" size="sm" v-on:click="editBoard()" v-show="showEditButton">
+                                            <i class="fa fa-check"></i> 
                                             수정
                                         </base-button>
                                     </div>
@@ -122,7 +126,7 @@ export default {
     methods: {
         getBoardViewData() {
             if (this.param.id !== undefined && this.param.id > 0) {
-                var url = '/get/board/view/' + this.param.id;
+                var url = `/get/board/view/${this.param.id}`;
                 var vm = this;
                 this.$http.get(url).then(function(result) {
                     vm.form.title = result.data.title;
@@ -155,7 +159,7 @@ export default {
             }
         },
         editBoard() {
-            var url = '/update/board/' + this.param.id;
+            var url = `/update/board/${this.param.id}`;
             if (this.form.title != '') {
                 this.$http.post(url, {
                     title: this.form.title,
@@ -217,5 +221,47 @@ export default {
 .span-info {
     font-size: 70%;
     color: #32325d;
+}
+
+.filebox input[type="file"] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip:rect(0,0,0,0);
+    border: 0;
+}
+.filebox .btn-upload {
+    display: inline-block; 
+    padding: .5em .75em; 
+    color: #999; 
+    font-size: inherit; 
+    line-height: normal; 
+    vertical-align: middle; 
+    background-color: #fdfdfd; 
+    cursor: pointer; 
+    border: 1px solid #ebebeb; 
+    border-bottom-color: #e2e2e2; 
+    border-radius: .25em; 
+} 
+
+.filebox .upload-name {
+    display: inline-block; 
+    padding: .5em .75em; 
+    
+    font-size: inherit; 
+    font-family: inherit; 
+    line-height: normal; 
+    vertical-align: middle; 
+    background-color: #fff; 
+    border: 1px solid #ebebeb; 
+    border-bottom-color: #e2e2e2; 
+    border-radius: .25em; 
+    -webkit-appearance: none; 
+    
+    -moz-appearance: none; 
+    appearance: none;
 }
 </style>

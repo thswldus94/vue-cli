@@ -35,12 +35,12 @@
 
                             <div v-show="showControlPanel" class="row align-items-center mt-4">
                                 <div class="col-lg-12" style="text-align: right;">
-                                    <base-button outline type="success" size="sm" v-on:click="editBoard(param.id)">
-                                        <i class="ni ni-zoom-split-in"></i> 
+                                    <base-button type="success" size="sm" v-on:click="editBoard(param.id)">
+                                        <i class="fa fa-edit"></i> 
                                         수정
                                     </base-button>
-                                    <base-button outline type="danger" size="sm" v-on:click="removeBoard(param.id)">
-                                        <i class="ni ni-zoom-split-in"></i> 
+                                    <base-button type="danger" size="sm" v-on:click="removeBoard(param.id)">
+                                        <i class="fa fa-times"></i> 
                                         삭제
                                     </base-button>
                                 </div>
@@ -65,19 +65,19 @@ export default {
     methods: {
         getBoardViewData() {
             var vm = this;
-            var url = '/get/board/view/' + this.param.id;
+            var url = `/get/board/view/${this.param.id}`;
             this.$http.get(url).then(function(result) {
                 vm.boardData = result.data;
                 vm.checkControlPanel(result.data.uid);
             });
         },
         editBoard(id) {
-            location.href = "/board/post/" + id;
+            location.href = `/board/post/${id}`;
         },
         removeBoard(id) {
             if (id > 0 && id !== undefined) {
                 if (confirm("게시글을 삭제하시겠습니까?")) {
-                    var url = "/delete/board/" + id;
+                    var url = `/delete/board/${id}`;
                     this.$http.get(url).then(function(result) {
                         if (result.status === 200) {
                             location.href = "/board";
@@ -90,20 +90,14 @@ export default {
                 alert('유효하지 않은 게시글입니다.');
             }
         },
-        checkControlPanel(uid) {
+        checkControlPanel() {
             // 로그인 하지 않고 글쓰는 사람 위해서 테스트로 모두 열어두기로 함
-            this.showControlPanel = true;
-
-            // var vm = this;
-            // this.$http.get('/api/session').then(function(result) {
-            //     if (Object.keys(result.data).length !== 0) {
-            //         if (result.data.id.length > 0 && result.data.email.length > 0) { 
-            //             if (uid === result.data.uid) {
-            //                 vm.showControlPanel = true;
-            //             }
-            //         }
-            //     }
-            // });    
+            this.showControlPanel = true; 
+        },
+        updateBoardHit() {
+            //var url = '/update/board/' + this.param.id + '/hit';
+            var url = `/update/board/${this.param.id}/hit`;
+            this.$http.get(url);
         }
     },
     computed: {
@@ -113,7 +107,10 @@ export default {
     },
     mounted() {
         this.type == 'dark';
+        // 게시판 데이터 뿌리기
         this.getBoardViewData();
+        // 조회수
+        this.updateBoardHit();
     }
 };
 </script>

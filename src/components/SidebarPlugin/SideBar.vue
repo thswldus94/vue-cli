@@ -24,10 +24,10 @@
                         <a class="dropdown-item" href="#">Something else here</a>
                     </base-dropdown>
                     <base-dropdown class="nav-item" position="right">
-                        <a slot="title" class="nav-link" href="#" role="button">
+                        <a slot="title" class="nav-link" role="button">
                             <div class="media align-items-center">
                               <span class="avatar avatar-sm rounded-circle">
-                                <img alt="Image placeholder" src="img/theme/team-1-800x800.jpg">
+                                <img alt="Image placeholder" src="img/theme/user.jpg">
                               </span>
                             </div>
                         </a>
@@ -53,8 +53,8 @@
                         </router-link>
                         <div class="dropdown-divider"></div>
                         <div class="pl-3" style="font-size: 0.875rem">
-							<i class="ni ni-user-run"></i>
-							<span v-on:click="logOut()" class="ml-3">Logout</span>
+                          <i class="ni ni-user-run"></i>
+                          <span v-on:click="logOut()" class="ml-3">Logout</span>
                         </div>
                     </base-dropdown>
                 </ul>
@@ -119,7 +119,7 @@
     props: {
       logo: {
         type: String,
-        default: 'img/brand/logo2.png',
+        default: 'img/brand/logo.png',
         description: 'Sidebar app logo'
       },
       autoClose: {

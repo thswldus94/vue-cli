@@ -66,13 +66,13 @@
         <!--Charts-->
         <div class="container-fluid mt--7">
             <div class="row">
-                <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 mb-5 mb-xl-0">
+                <div class="col-md-6 col-sm-12 mb-5 mb-xl-0">
                     <card header-classes="bg-transparent">
                         <highcharts :options="memChartOptions" :highcharts="memInstance" v-bind:style="chartClass"></highcharts>
                     </card>
                 </div>
 
-                <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 mb-5 mb-xl-0">
+                <div class="col-md-6 col-sm-12 mb-5 mb-xl-0">
                     <card header-classes="bg-transparent">
                         <highcharts :options="cpuChartOptions" :highcharts="cpuInstance" v-bind:style="chartClass"></highcharts>
                     </card>
