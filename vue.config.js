@@ -64,15 +64,6 @@ module.exports = {
 				},
 				secure: false
 			},
-			'/update/todo/done': {
-				target: 'https://127.0.0.1:3000',
-				changeOrigin: true,
-				ws: true,
-				publicPath: {
-					
-				},
-				secure: false
-			},
 			'^/api': {
 				target: 'https://127.0.0.1:3000',
 				changeOrigin: true,

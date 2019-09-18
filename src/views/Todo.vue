@@ -24,10 +24,10 @@
                                         <base-button outline size="sm" slot="title" type="primary" class="dropdown-toggle">
                                             +더보기
                                         </base-button>
-                                        <a class="dropdown-item" href="#" v-bind:style="{ display: todo.is_done == 0 ? 'block' : 'none' }" v-on:click="completeTodo(todo)">완료</a>
-                                        <a class="dropdown-item" href="#" v-bind:style="{ display: todo.is_done == 1 ? 'block' : 'none' }" v-on:click="cancleCompleteTodo(todo)">완료 취소</a>
-                                        <a class="dropdown-item" href="#" v-on:click="showUpdate(todo)">수정</a>
-                                        <a class="dropdown-item" href="#" v-on:click="deleteTodo(todo.id, idx)">삭제</a>
+                                        <a class="dropdown-item" href="#" v-bind:style="{ display: todo.is_done == 0 ? 'block' : 'none' }" v-on:click.prevent="completeTodo(todo)">완료</a>
+                                        <a class="dropdown-item" href="#" v-bind:style="{ display: todo.is_done == 1 ? 'block' : 'none' }" v-on:click.prevent="cancleCompleteTodo(todo)">완료 취소</a>
+                                        <a class="dropdown-item" href="#" v-on:click.prevent="showUpdate(todo)">수정</a>
+                                        <a class="dropdown-item" href="#" v-on:click.prevent="deleteTodo(todo.id, idx)">삭제</a>
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item" href="#">
                                             <small class="text-muted">ID : {{ todo.id }}</small><br />

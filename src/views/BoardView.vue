@@ -65,14 +65,14 @@ export default {
     methods: {
         getBoardViewData() {
             var vm = this;
-            var url = `/get/board/view/${this.param.id}`;
+            var url = `/get/board/detail/${this.param.id}`;
             this.$http.get(url).then(function(result) {
                 vm.boardData = result.data;
                 vm.checkControlPanel(result.data.uid);
             });
         },
         editBoard(id) {
-            location.href = `/board/post/${id}`;
+            this.$router.push(`/board/post/${id}`);
         },
         removeBoard(id) {
             if (id > 0 && id !== undefined) {

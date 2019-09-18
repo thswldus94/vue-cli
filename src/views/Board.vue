@@ -20,7 +20,6 @@
                                 </div>
 
                                 <div class="col text-right">
-                                    <!-- <base-button type="primary" size="sm" @click="modals.add = true"><i class="ni ni-fat-add"></i> 등록</base-button> -->
                                     <base-button type="primary" size="sm" v-on:click="addBoard()"><i class="fa fa-plus"></i> 등록</base-button>
                                 </div>
                             </div>
@@ -45,8 +44,8 @@
                                         {{row.id}}
                                     </td>
                                     <td class="budget">
-                                        <!-- <a href="#" v-on:click="viewBoard(row.id)">{{row.title}}</a> -->
-                                        <a v-bind:href="'/board/view/' + row.id" target="_blank">{{row.title}}</a>
+                                        <!-- <a v-bind:href="`/board/detail/${row.id}`" target="_blank">{{row.title}}</a> -->
+                                        <router-link v-bind:to="{ path : `/board/view/${row.id}` }">{{row.title}}</router-link>
                                     </td>
                                     <td class="budget">
                                         {{row.user}}
@@ -57,10 +56,6 @@
                                     <td class="budget">
                                         {{row.udate}}
                                     </td>
-                                    <!-- <td class="budget">
-                                        <a href="#" v-on:click="editBoard(row)">수정</a>
-                                        <a href="#" class="ml-2" v-on:click="removeBoard(row.id)">삭제</a>
-                                    </td> -->
                                 </template>
                             </base-table>
                         </div>
@@ -124,7 +119,7 @@ export default {
             });
         },
         addBoard() {
-            location.href = '/board/post';
+            this.$router.push("/board/post");
         }
     },
     mounted() {

@@ -50,14 +50,14 @@ export default new Router({
                     component: () => import( /* webpackChunkName: "demo" */ './views/News.vue')
                 },
                 {
+                    path: '/todo',
+                    name: 'Todo',
+                    component: () => import( /* webpackChunkName: "demo" */ './views/Todo.vue')
+				},
+                {
                     path: '/board',
                     name: 'board',
                     component: () => import( /* webpackChunkName: "demo" */ './views/Board.vue')
-                },
-                {
-                    path: '/board/view/:id',
-                    name: 'boardview',
-                    component: () => import( /* webpackChunkName: "demo" */ './views/BoardView.vue')
                 },
                 {
                     path: '/board/post',
@@ -70,9 +70,14 @@ export default new Router({
                     component: () => import( /* webpackChunkName: "demo" */ './views/BoardPost.vue')
                 },
                 {
-                    path: '/todo',
-                    name: 'Todo',
-                    component: () => import( /* webpackChunkName: "demo" */ './views/Todo.vue')
+                    path: '/board/view/:id',
+                    name: 'boardview',
+                    component: () => import( /* webpackChunkName: "demo" */ './views/BoardView.vue')
+                },
+                {
+					path: '/sheet',
+					name: 'sheet',
+					component: () => import(/* webpackChunkName: "demo" */ './views/GoogleSheet.vue')
 				},
 				{
 					path: '/vue',
@@ -101,6 +106,6 @@ export default new Router({
                     component: () => import( /* webpackChunkName: "demo" */ './views/Register.vue')
                 }
             ]
-		}
+        }
     ]
 })

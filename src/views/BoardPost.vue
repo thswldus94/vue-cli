@@ -126,7 +126,7 @@ export default {
     methods: {
         getBoardViewData() {
             if (this.param.id !== undefined && this.param.id > 0) {
-                var url = `/get/board/view/${this.param.id}`;
+                var url = `/get/board/detail/${this.param.id}`;
                 var vm = this;
                 this.$http.get(url).then(function(result) {
                     vm.form.title = result.data.title;

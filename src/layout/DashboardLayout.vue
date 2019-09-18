@@ -9,6 +9,7 @@
 			<sidebar-item :link="{name: '악성파일', icon: 'ni ni-notification-70 text-yellow', path: '/malwares'}"/>
 			<sidebar-item :link="{name: '오늘의 뉴스', icon: 'ni ni-camera-compact text-orange', path: '/news'}"/>
 			<sidebar-item :link="{name: '자유 게시판', icon: 'ni ni-email-83 text-blue', path: '/board'}"/>
+			<sidebar-item :link="{name: 'Google Sheet 연동', icon: 'ni ni-align-left-2 text-green', path: '/sheet'}"/>
 			<!-- <sidebar-item :link="{name: 'Maps', icon: 'ni ni-pin-3 text-orange', path: '/maps'}"/> -->
 			<!-- <sidebar-item :link="{name: 'User Profile', icon: 'ni ni-single-02 text-yellow', path: '/profile'}"/> -->
 			<!-- <sidebar-item :link="{name: 'Tables', icon: 'ni ni-bullet-list-67 text-red', path: '/tables'}"/> -->
