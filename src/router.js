@@ -78,6 +78,11 @@ export default new Router({
 					path: '/sheet',
 					name: 'sheet',
 					component: () => import(/* webpackChunkName: "demo" */ './views/GoogleSheet.vue')
+                },
+                {
+					path: '/chat',
+					name: 'chat',
+					component: () => import(/* webpackChunkName: "demo" */ './views/Chat/Chat.vue')
 				},
 				{
 					path: '/vue',
