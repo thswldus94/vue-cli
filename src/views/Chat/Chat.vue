@@ -17,21 +17,28 @@
 
                         <div class="card-body border-0">
                             <base-alert type="default" id="chat-list">
-                                <strong>Default!</strong> This is a default alert—check it out!
-                                <p class="chat-box" v-for="c in chat" v-bind:key="chat.id">{{ c }}</p>
+                                <strong>어서와유!</strong> 잠깐 쉬었다 가슈!
+                                <div v-for="(c, index) in chat" v-bind:key="index" class="chat-div pt-1">
+                                    <template>
+                                        <span v-bind:class="c.class">{{ c.content }}</span>
+                                    </template>
+                                </div>
+                                
                             </base-alert>
 
-                            <div class="row">
-                                <form role="form" v-on:submit.prevent="sendMessage()">
-                                    <div class="col-sm-12">
-                                        <base-input placeholder="아이디" addon-left-icon="ni ni-zoom-split-in" v-model="form.id" name="id"></base-input>
-                                    
+                            <form role="form" v-on:submit.prevent="sendMessage()">
+                                <div class="row">
+                                    <div class="col-2">
+                                        <base-input placeholder="아이디" v-model="form.id" name="id"></base-input>
+                                    </div>
+                                    <div class="col-7">
                                         <base-input placeholder="메시지" v-model="form.message" name="message"></base-input>
-
+                                    </div>
+                                    <div class="col-3">
                                         <base-button outline type="info" nativeType="submit">전송</base-button>
                                     </div>
-                                </form>
-                            </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -56,8 +63,6 @@ export default {
     },
     methods: {
         sendMessage() {
-            console.log('123');
-    
             socket.emit('send', {
                 name: this.form.id,
                 message: this.form.message
@@ -66,14 +71,39 @@ export default {
     },
     mounted() {
         var vm = this;
-        socket.on("connect", function() {
-            console.log('연결연결');
+        socket.on("new_connect", function(name) {
+            vm.chat.push({
+                class: 'chat-notice',
+                content: name + ' 님이 입장하였습니다.'
+            });
         });
 
-        socket.on('receiveMessage', function(msg){   // 메세지를 받았을 때 - 4
-            console.log(msg);
-            
-            vm.chat.push(msg);
+        socket.on("create_name", function(name) {
+            vm.chat.push({
+                class: 'chat-notice',
+                content: name + ' 으로 채팅을 시작합니다.'
+            });
+        });
+
+        socket.on("change_name", function(oldname, newname) {
+            vm.chat.push({
+                class: 'chat-notice',
+                content: oldname + ' 님이 ' + newname + ' 님으로 아이디를 변경했습니다.'
+            });
+        });
+
+        socket.on('receiveMessage', function(msg) {   // 메세지를 받았을 때 - 4
+            vm.chat.push({
+                class: 'chat-box',
+                content: msg
+            });
+        });
+
+        socket.on('new_disconnect', function(name) {   // 메세지를 받았을 때 - 4
+            vm.chat.push({
+                class: 'chat-notice',
+                content: name + ' 님이 퇴장하였습니다.'
+            });
         });
     }
 };
@@ -84,10 +114,14 @@ export default {
     height: 500px;
     border: 1px solid #e0e0e0;
 }
+.chat-div {
+    height: 30px;
+}
 .chat-box {
     background-color: #ffe812;
     border-radius: 3px;
     color: #000;
     padding: 5px;
+    height: 26px;
 }
 </style>
