@@ -17,7 +17,7 @@
                 <base-dropdown class="nav-link pr-0">
                     <div class="media align-items-center" slot="title">
                       <span class="avatar avatar-sm rounded-circle">
-                        <img alt="Image placeholder" src="img/theme/user.jpg">
+                        <img alt="Image placeholder" v-bind:src="imgsrc">
                       </span>
                       <div class="media-body ml-2 d-none d-lg-block">
                           <span v-if="id !== null && email !== null" class="mb-0 text-sm  font-weight-bold">{{ id }}</span>
@@ -73,6 +73,7 @@
         uid: null,
         id: null,
         email: null,
+        imgsrc: 'img/theme/user.jpg',
         showLogout: false
       };
     },
@@ -96,11 +97,14 @@
       var vm = this;
       this.$http.get('/api/session').then(function(result) {
         if (Object.keys(result.data).length !== 0) {
-          if (result.data.id.length > 0 && result.data.email.length > 0) { 
+          if (result.data.id.length > 0 && result.data.email != undefined) {
             vm.uid = result.data.uid;
             vm.id = result.data.id;
             vm.email = result.data.email;
             vm.showLogout = true;
+            if (result.data.picture !== undefined && result.data.picture != '') {
+              vm.imgsrc = result.data.picture;
+            }
           } else {
             vm.showLogout = false;
           }
